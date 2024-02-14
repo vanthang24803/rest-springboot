@@ -1,5 +1,6 @@
 package com.example.project.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,6 +25,7 @@ public class Category {
 
     private String name;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "categories")
     private List<Product> products;
 
