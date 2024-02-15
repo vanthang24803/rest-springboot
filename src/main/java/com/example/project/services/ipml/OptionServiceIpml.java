@@ -31,18 +31,12 @@ public class OptionServiceIpml implements OptionService {
 
     @Override
     public List<Option> findProductOptions(UUID productId) {
-        Product product = productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Product not found"));
         List<Option> options = optionRepository.findAllByProductId(productId);
         return new ArrayList<>(options);
     }
 
     @Override
     public Optional<Option> findOptionById(UUID productId, UUID optionId) {
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
-        Option option = optionRepository.findById(optionId)
-                .orElseThrow(() -> new ResourceNotFoundException("Option not found"));
-
         return optionRepository.findById(optionId);
     }
 
@@ -59,16 +53,13 @@ public class OptionServiceIpml implements OptionService {
 
     @Override
     public Option update(UUID productId, UUID optionId, OptionDto optionDto) {
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
-
-
         return optionRepository.findById(optionId).map(
                 exitingOption -> {
                     Optional.ofNullable(optionDto.getName()).ifPresent(exitingOption::setName);
                     Optional.of(optionDto.getQuantity()).ifPresent(exitingOption::setQuantity);
                     Optional.of(optionDto.getPrice()).ifPresent(exitingOption::setPrice);
                     Optional.of(optionDto.getSale()).ifPresent(exitingOption::setSale);
+                    exitingOption.setStatus(optionDto.getQuantity() > 0);
                     return optionRepository.save(exitingOption);
                 }
         ).orElseThrow(() -> new ResourceNotFoundException("Option not found"));
@@ -76,11 +67,6 @@ public class OptionServiceIpml implements OptionService {
 
     @Override
     public void delete(UUID productId, UUID optionId) {
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
-        Option option = optionRepository.findById(optionId)
-                .orElseThrow(() -> new ResourceNotFoundException("Option not found"));
-
         optionRepository.deleteById(optionId);
     }
 
@@ -90,7 +76,7 @@ public class OptionServiceIpml implements OptionService {
                 .sale(optionDto.getSale())
                 .quantity(optionDto.getQuantity())
                 .price(optionDto.getPrice())
-                .status(true)
+                .status(optionDto.getQuantity() > 0)
                 .build();
     }
 

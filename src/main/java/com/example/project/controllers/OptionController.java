@@ -23,7 +23,7 @@ public class OptionController {
             @PathVariable UUID productId, @RequestBody OptionDto optionDto
     ) {
         if (!optionService.isProductExits(productId)) {
-            return new ResponseEntity<String>("Product not found", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Product not found", HttpStatus.NOT_FOUND);
         }
 
         Option option = optionService.save(productId, optionDto);
@@ -36,28 +36,59 @@ public class OptionController {
             @PathVariable UUID productId
     ) {
         if (!optionService.isProductExits(productId)) {
-            return new ResponseEntity<String>("Product not found", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Product not found", HttpStatus.NOT_FOUND);
         }
 
         List<Option> options = optionService.findProductOptions(productId);
         return new ResponseEntity<>(options, HttpStatus.OK);
     }
 
-    @GetMapping(path = "{productId}/options/{optionId}")
+    @GetMapping(path = "{productId}/option/{optionId}")
     public ResponseEntity<?> findOptionById(
             @PathVariable UUID productId, @PathVariable UUID optionId
     ) {
         if (!optionService.isProductExits(productId)) {
-            return new ResponseEntity<String>("Product not found", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Product not found", HttpStatus.NOT_FOUND);
         }
 
         if (!optionService.isOptionExists(optionId)) {
-            return new ResponseEntity<String>("Option not found", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Option not found", HttpStatus.NOT_FOUND);
         }
 
         Optional<Option> option = optionService.findOptionById(productId, optionId);
         return new ResponseEntity<>(option, HttpStatus.OK);
-
     }
 
+    @PutMapping(path = "{productId}/option/{optionId}")
+    public ResponseEntity<?> updateOption(
+            @PathVariable UUID productId, @PathVariable UUID optionId,
+            @RequestBody OptionDto optionDto
+    ) {
+        if (!optionService.isProductExits(productId)) {
+            return new ResponseEntity<>("Product not found", HttpStatus.NOT_FOUND);
+        }
+
+        if (!optionService.isOptionExists(optionId)) {
+            return new ResponseEntity<>("Option not found", HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(optionService.update(productId, optionId, optionDto),
+                HttpStatus.OK);
+    }
+
+    @DeleteMapping(path = "{productId}/option/{optionId}")
+    public ResponseEntity<String> deleteOption(
+            @PathVariable UUID productId, @PathVariable UUID optionId
+    ) {
+        if (!optionService.isProductExits(productId)) {
+            return new ResponseEntity<>("Product not found", HttpStatus.NOT_FOUND);
+        }
+
+        if (!optionService.isOptionExists(optionId)) {
+            return new ResponseEntity<>("Option not found", HttpStatus.NOT_FOUND);
+        }
+        optionService.delete(productId, optionId);
+
+        return new ResponseEntity<>("Product deleted successfully", HttpStatus.OK);
+    }
 }
