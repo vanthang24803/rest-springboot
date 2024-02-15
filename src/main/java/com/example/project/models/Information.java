@@ -27,13 +27,24 @@ public class Information {
 
     private String format;
 
-    private String pages;
+    private String numberOfPage;
 
-    private  String gift;
+    private String isbn;
+
+    private String publisher;
+
+    private String company;
+    @Column(columnDefinition = "TEXT")
+    private String gift;
 
     private String price;
 
+    private String released;
+    @Column(columnDefinition = "TEXT")
+    private String introduce;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "product_id")
     @JsonIgnore
-    @OneToOne(mappedBy = "information")
     private Product product;
 }

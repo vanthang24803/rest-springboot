@@ -10,42 +10,23 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 @Data
-@Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Product {
+public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     private String name;
 
-    private String thumbnail;
-
-    private String brand;
-
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "user_id")
     @JsonIgnore
-    private Information information;
-
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-    private List<Option> options;
-
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-    private List<Image> images;
-
-    @ManyToMany
-    @JoinTable(
-            name = "product_category",
-            joinColumns = @JoinColumn(name = "product_id"),
-            inverseJoinColumns = @JoinColumn(name = "category_id")
-    )
-    private List<Category> categories;
+    private User user;
 
     @CreationTimestamp
     private LocalDateTime createdAt;

@@ -1,6 +1,5 @@
 package com.example.project.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,42 +13,33 @@ import java.util.List;
 import java.util.UUID;
 
 @Data
-@Entity
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
-public class Product {
+public class User  {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    private String name;
+    private String firstName;
 
-    private String thumbnail;
+    private String lastName;
 
-    private String brand;
+    private String userName;
 
-    @OneToOne
-    @JsonIgnore
-    private Information information;
+    private String password;
+
+    private String avatar;
+
+    private List<Role> roles;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-    private List<Option> options;
-
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-    private List<Image> images;
-
-    @ManyToMany
-    @JoinTable(
-            name = "product_category",
-            joinColumns = @JoinColumn(name = "product_id"),
-            inverseJoinColumns = @JoinColumn(name = "category_id")
-    )
-    private List<Category> categories;
+    private List<Address> addresses;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
 }
