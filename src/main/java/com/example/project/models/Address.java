@@ -16,6 +16,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Entity
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -26,7 +27,7 @@ public class Address {
     @ManyToOne
     @JoinColumn(name = "user_id")
     @JsonIgnore
-    private User user;
+    private UserEntity user;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
