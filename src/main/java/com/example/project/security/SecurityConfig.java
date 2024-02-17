@@ -32,10 +32,13 @@ public class SecurityConfig {
                 .sessionManagement(s -> s
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/auth/login").permitAll()
+                        .requestMatchers("/api/auth/register").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/v1/product/**").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/v1/product/**").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/product/**").authenticated()
+                        .requestMatchers("/api/auth/profile/**").authenticated()
+                        .requestMatchers("/api/auth/role/**").authenticated()
                         .anyRequest().permitAll())
                 .httpBasic(Customizer.withDefaults());
 
