@@ -1,7 +1,6 @@
 package com.example.project.dtos.request;
 
 import com.example.project.enums.Payment;
-import com.example.project.enums.Status;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;

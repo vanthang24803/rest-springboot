@@ -11,6 +11,8 @@ import com.example.project.repositories.OptionRepository;
 import com.example.project.repositories.OrderRepository;
 import com.example.project.models.Option;
 import com.example.project.services.OrderService;
+import com.example.project.services.SendMailService;
+import com.example.project.untils.EmailTemplateUntils;
 import com.example.project.untils.ExcelExportUtils;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +31,7 @@ public class OrderServiceIpml implements OrderService {
 
     private final OrderRepository orderRepository;
     private final OptionRepository optionRepository;
+    private final SendMailService mailService;
 
     @Override
     public Order save(OrderDto orderDto) {
@@ -47,6 +50,12 @@ public class OrderServiceIpml implements OrderService {
             }
             optionRepository.save(option);
         }
+
+        String toEmail = orderDto.getEmail();
+        String subject = "Order confirmation";
+        String body =  EmailTemplateUntils.createOrderConfirmationEmailBody(orderDto);
+
+        mailService.sendMail(toEmail, subject, body);
 
         return order;
     }
