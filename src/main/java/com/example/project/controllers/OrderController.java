@@ -6,6 +6,7 @@ import com.example.project.dtos.request.UpdateOrderStatusDto;
 import com.example.project.enums.Status;
 import com.example.project.models.Order;
 import com.example.project.services.OrderService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +32,17 @@ public class OrderController {
         List<Order> orders = orderService.findAll();
         return ResponseEntity.ok(orders);
     }
+
+    @GetMapping(path = "order/export")
+    public ResponseEntity<?> export(HttpServletResponse response) {
+        try {
+            orderService.exportExcel(response);
+            return ResponseEntity.ok("Orders exported successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while exporting the orders: " + e.getMessage());
+        }
+    }
+
 
     @GetMapping(path = "order/{id}")
     public ResponseEntity<?> find(@PathVariable UUID id) {

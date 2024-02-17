@@ -7,11 +7,17 @@ import com.example.project.enums.Status;
 import com.example.project.exceptions.ResourceNotFoundException;
 import com.example.project.models.Order;
 import com.example.project.models.OrderDetail;
+import com.example.project.repositories.OptionRepository;
 import com.example.project.repositories.OrderRepository;
+import com.example.project.models.Option;
 import com.example.project.services.OrderService;
+import com.example.project.untils.ExcelExportUtils;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -22,11 +28,27 @@ import java.util.stream.Collectors;
 public class OrderServiceIpml implements OrderService {
 
     private final OrderRepository orderRepository;
+    private final OptionRepository optionRepository;
 
     @Override
     public Order save(OrderDto orderDto) {
         Order order = mapToDto(orderDto);
-        return orderRepository.save(order);
+        orderRepository.save(order);
+        for (OrderDetail detail : order.getDetails()) {
+            Option option = optionRepository.
+                    findById(UUID.fromString(detail.getOptionId()))
+                    .orElseThrow(() -> new RuntimeException("Option not found"));
+
+            int newQuantity = option.getQuantity() - detail.getQuantity();
+            option.setQuantity(newQuantity);
+
+            if (newQuantity == 0) {
+                option.setStatus(false);
+            }
+            optionRepository.save(option);
+        }
+
+        return order;
     }
 
     @Override
@@ -75,6 +97,26 @@ public class OrderServiceIpml implements OrderService {
     public List<Order> findAll() {
         return orderRepository.findAll();
     }
+
+    @Override
+    public void exportExcel(HttpServletResponse response) {
+        List<Order> orders = orderRepository.findAll();
+
+        ExcelExportUtils excelExportUtils = new ExcelExportUtils();
+        excelExportUtils.exportOrdersToExcel(orders);
+        excelExportUtils.exportOrderDetailsToExcel(orders);
+
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-Disposition", "attachment; filename=orders.xlsx");
+
+        try (OutputStream outputStream = response.getOutputStream()) {
+            excelExportUtils.getWorkbook().write(outputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 
     @Override
     public void remove(UUID id) {

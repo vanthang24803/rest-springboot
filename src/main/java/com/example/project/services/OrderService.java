@@ -5,6 +5,7 @@ import com.example.project.dtos.request.UpdateOrderDto;
 import com.example.project.dtos.request.UpdateOrderStatusDto;
 import com.example.project.enums.Status;
 import com.example.project.models.Order;
+import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +25,8 @@ public interface OrderService {
     Optional<Order> findOrder(UUID id);
 
     List<Order> findAll();
+
+    void exportExcel(HttpServletResponse response);
 
     void remove(UUID id);
 }
