@@ -34,6 +34,8 @@ public class SecurityConfig {
                 .authorizeRequests(auth -> auth
                         .requestMatchers("/api/auth/login").permitAll()
                         .requestMatchers("/api/auth/register").permitAll()
+                        .requestMatchers("/api/auth/forgot-password").permitAll()
+                        .requestMatchers("/api/auth/reset-password").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/v1/product/**").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/v1/product/**").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/product/**").authenticated()

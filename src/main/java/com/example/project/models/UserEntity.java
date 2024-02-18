@@ -34,6 +34,11 @@ public class UserEntity {
 
     private String avatar;
 
+    private boolean verify;
+
+    @OneToOne(mappedBy = "user")
+    private Token token;
+
     @ManyToMany(fetch = FetchType.EAGER , cascade = CascadeType.ALL)
     @JoinTable(
             name = "users_roles",
@@ -50,4 +55,5 @@ public class UserEntity {
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
 }
