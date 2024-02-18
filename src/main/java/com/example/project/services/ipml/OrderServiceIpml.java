@@ -51,9 +51,9 @@ public class OrderServiceIpml implements OrderService {
             optionRepository.save(option);
         }
 
-        String toEmail = orderDto.getEmail();
+        String toEmail = order.getEmail();
         String subject = "Order confirmation";
-        String body =  EmailTemplateUntils.createOrderConfirmationEmailBody(orderDto);
+        String body =  EmailTemplateUntils.createOrderConfirmationEmailBody(order);
 
         mailService.sendMail(toEmail, subject, body);
 
@@ -67,7 +67,15 @@ public class OrderServiceIpml implements OrderService {
 
         order.setStatus(updateOrderDto.getStatus());
 
-        return orderRepository.save(order);
+        orderRepository.save(order);
+
+        String toEmail = order.getEmail();
+        String subject = "Order update" + " " + order.getStatus();
+        String message =  EmailTemplateUntils.createOrderConfirmationEmailBody(order);
+
+        mailService.sendMail(toEmail, subject, message);
+
+        return order;
     }
 
     @Override
@@ -80,6 +88,12 @@ public class OrderServiceIpml implements OrderService {
         order.setAddress(updateOrderDto.getAddress());
         order.setPayment(updateOrderDto.getPayment());
         order.setShipping(updateOrderDto.isShipping());
+
+        String toEmail = order.getEmail();
+        String subject = "Order update information";
+        String message =  EmailTemplateUntils.createOrderConfirmationEmailBody(order);
+
+        mailService.sendMail(toEmail, subject, message);
 
         return orderRepository.save(order);
     }
