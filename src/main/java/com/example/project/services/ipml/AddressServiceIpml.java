@@ -1,6 +1,7 @@
 package com.example.project.services.ipml;
 
 import com.example.project.dtos.request.AddressDto;
+import com.example.project.mappers.AddressMapper;
 import com.example.project.models.Address;
 import com.example.project.models.UserEntity;
 import com.example.project.repositories.AddressRepository;
@@ -18,12 +19,13 @@ import java.util.UUID;
 public class AddressServiceIpml implements AddressService {
     private final UserRepository userRepository;
     private final AddressRepository addressRepository;
+    private final AddressMapper addressMapper;
 
     @Override
     public Address save(String email, AddressDto addressDto) {
         UserEntity user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        Address address = mapToDto(addressDto);
+        Address address = addressMapper.mapToDto(addressDto);
 
         address.setUser(user);
 
@@ -59,9 +61,4 @@ public class AddressServiceIpml implements AddressService {
         addressRepository.delete(address);
     }
 
-    private Address mapToDto(AddressDto addressDto) {
-        Address address = new Address();
-        address.setName(addressDto.getName());
-        return address;
-    }
 }

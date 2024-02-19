@@ -2,6 +2,7 @@ package com.example.project.controllers;
 
 import com.example.project.dtos.request.CreateProductDto;
 import com.example.project.models.Product;
+import com.example.project.services.CategoryService;
 import com.example.project.services.ProductService;
 import com.example.project.untils.QueryObject;
 import lombok.RequiredArgsConstructor;
@@ -18,9 +19,14 @@ import java.util.UUID;
 @RequestMapping("/api/v1")
 public class ProductController {
     private final ProductService productService;
+    private final CategoryService categoryService;
 
     @PostMapping(path = "/product")
-    public ResponseEntity<Product> createProduct(@RequestBody CreateProductDto createProductDto) {
+    public ResponseEntity<?> createProduct(@RequestBody CreateProductDto createProductDto) {
+        if (!categoryService.isExists(createProductDto.getCategoryId())) {
+            return new ResponseEntity<>("Category not found", HttpStatus.NOT_FOUND);
+        }
+
         Product product = productService.save((createProductDto));
         return new ResponseEntity<>(product, HttpStatus.CREATED);
     }
@@ -28,7 +34,7 @@ public class ProductController {
     @GetMapping(path = "/products")
     public ResponseEntity<List<Product>> getAllProducts(
             @ModelAttribute QueryObject queryObject
-            ) {
+    ) {
         List<Product> products = productService.findAll(queryObject);
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
@@ -51,7 +57,7 @@ public class ProductController {
 
     @PutMapping(path = "/product/{id}")
     public ResponseEntity<Product> updateProduct(@PathVariable UUID id,
-                                                @RequestBody  CreateProductDto createProductDto) {
+                                                 @RequestBody CreateProductDto createProductDto) {
         if (!productService.isExists(id)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

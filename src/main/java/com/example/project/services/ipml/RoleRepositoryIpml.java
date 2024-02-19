@@ -2,6 +2,7 @@ package com.example.project.services.ipml;
 
 import com.example.project.dtos.response.MessageResponseDto;
 import com.example.project.dtos.response.RoleDto;
+import com.example.project.mappers.RoleMapper;
 import com.example.project.models.Role;
 import com.example.project.models.UserEntity;
 import com.example.project.repositories.RoleRepository;
@@ -20,10 +21,11 @@ import java.util.UUID;
 public class RoleRepositoryIpml implements RoleService {
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
+    private final RoleMapper roleMapper;
 
     @Override
     public Role save(RoleDto roleDto) {
-        Role role = mapToDto(roleDto);
+        Role role = roleMapper.mapToDto(roleDto);
 
         return roleRepository.save(role);
     }
@@ -108,10 +110,5 @@ public class RoleRepositoryIpml implements RoleService {
     }
 
 
-    private Role mapToDto(RoleDto roleDto) {
-        Role role = new Role();
-        role.setName(roleDto.getName());
 
-        return role;
-    }
 }

@@ -2,6 +2,7 @@ package com.example.project.services.ipml;
 
 import com.example.project.dtos.request.CategoryDto;
 import com.example.project.exceptions.ResourceNotFoundException;
+import com.example.project.mappers.CategoryMapper;
 import com.example.project.models.Category;
 import com.example.project.repositories.CategoryRepository;
 import com.example.project.services.CategoryService;
@@ -18,10 +19,11 @@ import java.util.UUID;
 public class CategoryServiceIpml implements CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final CategoryMapper categoryMapper;
 
     @Override
     public Category save(CategoryDto categoryDto) {
-        Category category = mapToDto(categoryDto);
+        Category category = categoryMapper.mapToDto(categoryDto);
         return categoryRepository.save(category);
     }
 
@@ -41,7 +43,7 @@ public class CategoryServiceIpml implements CategoryService {
                 exittingCategory -> {
                     Optional.ofNullable(categoryDto.getName()).ifPresent(exittingCategory::setName);
                     return categoryRepository.save(exittingCategory);
-                }).orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+                }).orElseThrow(() -> new ResourceNotFoundException("Category not found"));
     }
 
     @Override
@@ -54,9 +56,4 @@ public class CategoryServiceIpml implements CategoryService {
         categoryRepository.deleteById(id);
     }
 
-    private Category mapToDto(CategoryDto categoryDto) {
-        return Category.builder()
-                .name(categoryDto.getName())
-                .build();
-    }
 }

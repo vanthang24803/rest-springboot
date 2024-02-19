@@ -2,6 +2,7 @@ package com.example.project.services.ipml;
 
 import com.example.project.dtos.request.OptionDto;
 import com.example.project.exceptions.ResourceNotFoundException;
+import com.example.project.mappers.OptionMapper;
 import com.example.project.models.Option;
 import com.example.project.models.Product;
 import com.example.project.repositories.OptionRepository;
@@ -20,11 +21,12 @@ import java.util.UUID;
 public class OptionServiceIpml implements OptionService {
     private final ProductRepository productRepository;
     private final OptionRepository optionRepository;
+    private final OptionMapper optionMapper;
 
     @Override
     public Option save(UUID productId, OptionDto optionDto) {
         Product product = productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Product not found"));
-        Option option = mapToDto(optionDto);
+        Option option = optionMapper.mapToDto(optionDto);
         option.setProduct(product);
         return optionRepository.save(option);
     }
@@ -68,16 +70,6 @@ public class OptionServiceIpml implements OptionService {
     @Override
     public void delete(UUID productId, UUID optionId) {
         optionRepository.deleteById(optionId);
-    }
-
-    private Option mapToDto(OptionDto optionDto) {
-        return Option.builder()
-                .name(optionDto.getName())
-                .sale(optionDto.getSale())
-                .quantity(optionDto.getQuantity())
-                .price(optionDto.getPrice())
-                .status(optionDto.getQuantity() > 0)
-                .build();
     }
 
 }

@@ -1,9 +1,17 @@
 package com.example.project.services.ipml;
 
 import com.example.project.dtos.request.CreateProductDto;
+import com.example.project.dtos.request.OptionDto;
 import com.example.project.exceptions.ResourceNotFoundException;
+import com.example.project.mappers.OptionMapper;
+import com.example.project.mappers.ProductMapper;
+import com.example.project.models.Category;
+import com.example.project.models.Option;
 import com.example.project.models.Product;
+import com.example.project.repositories.OptionRepository;
 import com.example.project.repositories.ProductRepository;
+import com.example.project.services.CategoryService;
+import com.example.project.services.ProductCategoryService;
 import com.example.project.services.ProductService;
 import com.example.project.untils.ProductFilter;
 import com.example.project.untils.QueryObject;
@@ -23,11 +31,30 @@ import java.util.UUID;
 public class ProductServiceIpml implements ProductService {
 
     private final ProductRepository productRepository;
+    private final ProductCategoryService productCategoryService;
+    private final CategoryService categoryService;
+    private final OptionRepository optionRepository;
+    private final ProductMapper productMapper;
+    private final OptionMapper optionMapper;
 
     @Override
     public Product save(CreateProductDto createProductDto) {
-        Product product = mapToCreate(createProductDto);
-        return productRepository.save(product);
+        Product product = productMapper.mapToCreate(createProductDto);
+
+        Category category = categoryService.findById(createProductDto.getCategoryId())
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
+
+        productRepository.save(product);
+
+        for (OptionDto optionDto : createProductDto.getOptions()) {
+            Option option = optionMapper.mapToDto(optionDto);
+            option.setProduct(product);
+            optionRepository.save(option);
+        }
+
+        productCategoryService.addCategoryToProduct(product.getId(), category.getId());
+
+        return product;
     }
 
     @Override
@@ -72,12 +99,4 @@ public class ProductServiceIpml implements ProductService {
                 }).orElseThrow(() -> new ResourceNotFoundException("Product not found"));
     }
 
-
-    private Product mapToCreate(CreateProductDto createProductDto) {
-        return Product.builder()
-                .name(createProductDto.getName())
-                .brand(createProductDto.getBrand())
-                .thumbnail(createProductDto.getThumbnail())
-                .build();
-    }
 }

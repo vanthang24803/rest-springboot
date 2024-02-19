@@ -2,6 +2,7 @@ package com.example.project.services.ipml;
 
 import com.example.project.dtos.request.InformationDto;
 import com.example.project.exceptions.ResourceNotFoundException;
+import com.example.project.mappers.InformationMapper;
 import com.example.project.models.Information;
 import com.example.project.models.Product;
 import com.example.project.repositories.InformationRepository;
@@ -18,11 +19,12 @@ import java.util.UUID;
 public class InformationServiceIpml implements InformationService {
     private final ProductRepository productRepository;
     private final InformationRepository informationRepository;
+    private final InformationMapper informationMapper;
 
     @Override
     public Information save(UUID productId, InformationDto informationDto) {
         Product product = productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Product not found"));
-        Information information = mapToDto(informationDto);
+        Information information = informationMapper.mapToDto(informationDto);
 
         information.setProduct(product);
 
@@ -61,20 +63,4 @@ public class InformationServiceIpml implements InformationService {
         informationRepository.deleteByProductId(productId);
     }
 
-    private Information mapToDto(InformationDto informationDto) {
-        return Information.builder()
-                .author(informationDto.getAuthor())
-                .translator(informationDto.getTranslator())
-                .category(informationDto.getCategory())
-                .format(informationDto.getFormat())
-                .numberOfPage(informationDto.getNumberOfPage())
-                .isbn(informationDto.getIsbn())
-                .publisher(informationDto.getPublisher())
-                .company(informationDto.getCompany())
-                .gift(informationDto.getGift())
-                .price(informationDto.getPrice())
-                .released(informationDto.getReleased())
-                .introduce(informationDto.getIntroduce())
-                .build();
-    }
 }

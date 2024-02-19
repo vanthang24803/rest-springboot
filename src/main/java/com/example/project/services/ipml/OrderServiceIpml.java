@@ -1,13 +1,17 @@
 package com.example.project.services.ipml;
 
+import com.example.project.dtos.request.OrderDetailDto;
 import com.example.project.dtos.request.OrderDto;
 import com.example.project.dtos.request.UpdateOrderDto;
 import com.example.project.dtos.request.UpdateOrderStatusDto;
 import com.example.project.enums.Status;
 import com.example.project.exceptions.ResourceNotFoundException;
+import com.example.project.mappers.OrderDetailMapper;
+import com.example.project.mappers.OrderMapper;
 import com.example.project.models.Order;
 import com.example.project.models.OrderDetail;
 import com.example.project.repositories.OptionRepository;
+import com.example.project.repositories.OrderDetailRepository;
 import com.example.project.repositories.OrderRepository;
 import com.example.project.models.Option;
 import com.example.project.services.OrderService;
@@ -23,7 +27,6 @@ import java.io.OutputStream;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -32,11 +35,21 @@ public class OrderServiceIpml implements OrderService {
     private final OrderRepository orderRepository;
     private final OptionRepository optionRepository;
     private final SendMailService mailService;
+    private final OrderMapper orderMapper;
+    private final OrderDetailMapper orderDetailMapper;
+    private final OrderDetailRepository orderDetailRepository;
 
     @Override
     public Order save(OrderDto orderDto) {
-        Order order = mapToDto(orderDto);
+        Order order = orderMapper.mapToDto(orderDto);
         orderRepository.save(order);
+
+        for(OrderDetailDto orderDetailDto : orderDto.getDetails()){
+            OrderDetail orderDetail = orderDetailMapper.mapToDto(orderDetailDto);
+            orderDetail.setOrder(order);
+            orderDetailRepository.save(orderDetail);
+        }
+
         for (OrderDetail detail : order.getDetails()) {
             Option option = optionRepository.
                     findById(UUID.fromString(detail.getOptionId()))
@@ -140,43 +153,11 @@ public class OrderServiceIpml implements OrderService {
     }
 
 
-
     @Override
     public void remove(UUID id) {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
         orderRepository.delete(order);
-    }
-
-    public Order mapToDto(OrderDto orderDto) {
-        Order order = new Order();
-        order.setEmail(orderDto.getEmail());
-        order.setCustomer(orderDto.getCustomer());
-        order.setNumberPhone(orderDto.getNumberPhone());
-        order.setAddress(orderDto.getAddress());
-        order.setPayment(orderDto.getPayment());
-        order.setStatus(Status.PENDING);
-        order.setShipping(orderDto.isShipping());
-        order.setQuantity(orderDto.getQuantity());
-        order.setTotalPrice(orderDto.getTotalPrice());
-
-        List<OrderDetail> orderDetails = orderDto.getDetails().stream().map(detailDto -> {
-            OrderDetail detail = new OrderDetail();
-            detail.setProductId(detailDto.getProductId());
-            detail.setOptionId(detailDto.getOptionId());
-            detail.setName(detailDto.getName());
-            detail.setThumbnail(detailDto.getThumbnail());
-            detail.setOption(detailDto.getOption());
-            detail.setPrice(detailDto.getPrice());
-            detail.setSale(detailDto.getSale());
-            detail.setQuantity(detailDto.getQuantity());
-            detail.setOrder(order);
-            return detail;
-        }).collect(Collectors.toList());
-
-        order.setDetails(orderDetails);
-
-        return order;
     }
 
 }

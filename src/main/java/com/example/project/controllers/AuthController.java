@@ -20,18 +20,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.Map;
-import java.util.Objects;
 
 @RestController
 @RequiredArgsConstructor
@@ -44,6 +39,8 @@ public class AuthController {
     private final JWTGenerator jwtGenerator;
     private final TokenRepository tokenRepository;
     private final SendMailService mailService;
+
+    private final String clientUrl = System.getenv("CLIENT_URL");
 
     @PostMapping(path = "register")
     public ResponseEntity<?> register(@RequestBody RegisterDto registerDto) {
@@ -76,7 +73,7 @@ public class AuthController {
         tokenRepository.save(token);
 
         String subject = "Verify account";
-        String message = "<a href='http://localhost:8080/verify-account?token=" + token.getValue()
+        String message = "<a href='" + clientUrl + "/verify-account?token=" + token.getValue()
                 + "' target='_blank'>Click here to verify your account</a>";
 
         mailService.sendMail(registerDto.getEmail(), subject, message);
@@ -127,8 +124,9 @@ public class AuthController {
             tokenRepository.save(token);
 
             String subject = "Forgot password";
-            String message = "<a href='http://localhost:8080/reset-password?token=" + token.getValue()
+            String message = "<a href='" + clientUrl + "/reset-password?token=" + token.getValue()
                     + "' target='_blank'>Click here to reset your password</a>";
+
 
             mailService.sendMail(forgotPasswordDto.getEmail(), subject, message);
             return new ResponseEntity<>("New Token send successfully", HttpStatus.OK);
