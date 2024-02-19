@@ -42,6 +42,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/profile/**").authenticated()
                         .requestMatchers("/api/auth/role/**").authenticated()
                         .anyRequest().permitAll())
+                .oauth2Login(Customizer.withDefaults())
                 .httpBasic(Customizer.withDefaults());
 
         httpSecurity.addFilterBefore(jwtAuthenticationFilter(),
@@ -62,7 +63,7 @@ public class SecurityConfig {
 
 
     @Bean
-    public  JWTAuthenticationFilter jwtAuthenticationFilter() {
+    public JWTAuthenticationFilter jwtAuthenticationFilter() {
         return new JWTAuthenticationFilter();
     }
 }

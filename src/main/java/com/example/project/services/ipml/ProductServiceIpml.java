@@ -5,10 +5,14 @@ import com.example.project.exceptions.ResourceNotFoundException;
 import com.example.project.models.Product;
 import com.example.project.repositories.ProductRepository;
 import com.example.project.services.ProductService;
+import com.example.project.untils.ProductFilter;
+import com.example.project.untils.QueryObject;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -27,10 +31,19 @@ public class ProductServiceIpml implements ProductService {
     }
 
     @Override
-    public List<Product> findAll() {
-        return new ArrayList<>(productRepository
-                .findAll());
+    public List<Product> findAll(QueryObject queryObject) {
+        Sort sort = ProductFilter.getSortFromFilter(queryObject.getFilter());
+        PageRequest pageRequest = PageRequest.of(queryObject.getPage() - 1, queryObject.getLimit(), sort);
+
+        return productRepository.findAll(
+                Specification.where(ProductFilter.filterByName(queryObject.getName()))
+                        .and(ProductFilter.filterByCategory(queryObject.getCategory()))
+                        .and(ProductFilter.filterByStatus(queryObject.getStatus()))
+                        .and(ProductFilter.filterByPrice(queryObject.getSortBy())),
+                pageRequest
+        ).getContent();
     }
+
 
     @Override
     public Optional<Product> findById(UUID id) {

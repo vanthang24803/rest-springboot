@@ -3,6 +3,7 @@ package com.example.project.controllers;
 import com.example.project.dtos.request.CreateProductDto;
 import com.example.project.models.Product;
 import com.example.project.services.ProductService;
+import com.example.project.untils.QueryObject;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,21 +20,23 @@ public class ProductController {
     private final ProductService productService;
 
     @PostMapping(path = "/product")
-    public ResponseEntity<String> createProduct(@RequestBody CreateProductDto createProductDto) {
+    public ResponseEntity<Product> createProduct(@RequestBody CreateProductDto createProductDto) {
         Product product = productService.save((createProductDto));
-        return new ResponseEntity<String>("Product created success!", HttpStatus.CREATED);
+        return new ResponseEntity<>(product, HttpStatus.CREATED);
     }
 
     @GetMapping(path = "/products")
-    public ResponseEntity<List<Product>> getAllProducts() {
-        List<Product> products = productService.findAll();
-        return new ResponseEntity<List<Product>>(products, HttpStatus.OK);
+    public ResponseEntity<List<Product>> getAllProducts(
+            @ModelAttribute QueryObject queryObject
+            ) {
+        List<Product> products = productService.findAll(queryObject);
+        return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
     @GetMapping(path = "/product/{id}")
     public ResponseEntity<?> getProductById(@PathVariable UUID id) {
         return productService.findById(id)
-                .map(product -> new ResponseEntity<Product>(product, HttpStatus.OK))
+                .map(product -> new ResponseEntity<>(product, HttpStatus.OK))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
     }
 
