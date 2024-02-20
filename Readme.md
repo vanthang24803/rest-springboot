@@ -4,61 +4,75 @@
   </a>
 </div>
 
-<h2 align="center">AMAK Store</h2>
+<h2 align="center">AMAK Store API</h2>
 
-<p align="center">An E-commerce website Client side rendering  using <a href="https://vuejs.
-org/">Vue 3 JS</a>  · 
-<a href="https://tailwindcss.
-com/">Tailwindcss</a>  ·  <a href="https://www.shadcn-vue.com//">Vue-cnUI</a> · <a href="https://github.com/vanthang24803/microservice-store"> Microservice NET 8 Web Api</a> ·   <a href="https://www.docker.com/">Docker</a></p>
+<p align="center">An E-commerce Application API using <a href="https://spring.io/">Spring boot 3</a>·  <a href="https://www.postgresql.org/">PostgreSQL</a> ·  <a href="https://www.docker.com/">Docker</a></p>
+
 
 ## Options
 
-<a href="https://github.com/vanthang24803/store-next-14"> Server-side Rendering (SSR) with NextJS 14</a>
+- <a href="https://github.com/vanthang24803/microservice-store">Microservice with ASP NET 8 .</a>
+
+## Documentation
+  - [Installation](./docs/Installation.md)
+  - [Configuration](./docs/Configuration.md)
+  - [Authentication](./docs/Auth.md)
+  - [Profile](./docs/Profile.md)
+  - [Product](./docs/Product.md)
+  - [Order](./docs/Order.md)
+
 
 ## Environment Variables
 
 To run this project, you will need to add the following environment variables to your .env file
 
-`VITE_API_URL`
-`VITE_MAIN_URL`
+```env 
+API_KEY=
+API_SECRET=
+CLIENT_URL=
+CLOUD_NAME=
+DB_PASSWORD=
+DB_URL=
+DB_USERNAME=
+GG_ID=
+GG_SECRET=
+MAIL_PASSWORD=
+MAIL_USERNAME=
+```
 
 ## Run Locally
 
-Clone the project (Node >= 20.9.0)
+Clone the project (JDK >= 17)
 
 ```bash
-  git clone https://github.com/vanthang24803/store-vue
+  git clone https://github.com/vanthang24803/store-spring-monolithic.git
 ```
 
 Go to the project directory
 
 ```bash
-  cd store-vue
+  cd store-spring-monolithic
 ```
 
 Install dependencies
 
 ```bash
-  npm install
+    mvn dependency:copy-dependencies
 ```
 
 Start the server
 
 ```bash
-  npm run start
+  mvn spring-boot:run
 ```
 
-Website using port 3000
+Website using port 8080
 
-## Docker
+## Build with Docker
 
-Build Docker Image
 
 ```bash
   docker-compose up
 ```
-
-![image](https://github.com/vanthang24803/store-next-14/assets/101810628/cbe615cf-c696-491a-ac72-4390b772ac52)
-
 
 
