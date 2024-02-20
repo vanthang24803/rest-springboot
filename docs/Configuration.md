@@ -23,7 +23,7 @@ DB_USERNAME=
 GG_ID=
 GG_SECRET=
 MAIL_PASSWORD=
-MAIL_USER
+MAIL_USER=
 ```
 
 ### STEP 1 — Config Database Postgres
