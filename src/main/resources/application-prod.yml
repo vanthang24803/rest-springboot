@@ -1,9 +1,9 @@
 spring:
   datasource:
-    url: ${PD_DB_URL}
+    url: postgres://@dpg-cna5gb8l6cac739o3ov0-a.singapore-postgres.render.com/database_d1ez
     driver-class-name: org.postgresql.Driver
-    username: ${PD_DB_USERNAME}
-    password: ${PD_DB_PASSWORD}
+    username: database_d1ez_user
+    password: Vh6GAW0XrYvypwJ4OLJodpTKZxYydr8n
   jpa:
     hibernate:
       ddl-auto: update
@@ -29,6 +29,7 @@ spring:
           google:
             client-id: ${GG_ID}
             client-secret: ${GG_SECRET}
+
 
 server:
   port: 8080
