@@ -13,7 +13,7 @@ The simplest way to authenticate users
 
 ### Register:
 
-```
+```http
 POST /api/auth/register 
 ```
 
