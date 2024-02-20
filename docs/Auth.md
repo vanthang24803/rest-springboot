@@ -7,13 +7,13 @@ The simplest way to authenticate users
 
 
 ## Endpoint:
-```http 
+```
 /api/auth/** 
 ```
 
 ### Register:
 
-```http 
+```
 POST /api/auth/register 
 ```
 

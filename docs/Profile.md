@@ -9,7 +9,7 @@ Settings Profile Account API
 
 ## Endpoint
 
-```http
+```
 /api/auth/profile/**
 ```
 
