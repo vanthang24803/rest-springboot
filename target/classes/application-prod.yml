@@ -1,0 +1,35 @@
+spring:
+  datasource:
+    url: postgres://@dpg-cna5gb8l6cac739o3ov0-a.singapore-postgres.render.com/database_d1ez
+    driver-class-name: org.postgresql.Driver
+    username: database_d1ez_user
+    password: Vh6GAW0XrYvypwJ4OLJodpTKZxYydr8n
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GG_ID}
+            client-secret: ${GG_SECRET}
+
+
+server:
+  port: 8080

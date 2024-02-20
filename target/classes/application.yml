@@ -1,0 +1,35 @@
+spring:
+  datasource:
+    url: ${PD_DB_URL}
+    driver-class-name: org.postgresql.Driver
+    username: ${PD_DB_USERNAME}
+    password: ${PD_DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GG_ID}
+            client-secret: ${GG_SECRET}
+
+
+server:
+  port: 8080
