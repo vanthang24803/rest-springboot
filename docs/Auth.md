@@ -8,13 +8,13 @@ The simplest way to authenticate users
 
 ## Endpoint:
 ```http 
-  HTTP /api/auth/** 
+/api/auth/** 
 ```
 
 ### Register:
 
 ```http 
-  POST /api/auth/register 
+POST /api/auth/register 
 ```
 
 #### Request
@@ -44,7 +44,7 @@ The simplest way to authenticate users
 ### Login:
 
 ```http 
-  POST /api/auth/login 
+POST /api/auth/login 
 ```
 
 #### Request
@@ -79,7 +79,7 @@ The simplest way to authenticate users
 ### Forgot Password
 
 ```http 
-  POST /api/auth/forgot-password?token=${string} 
+POST /api/auth/forgot-password?token=${string} 
 ```
 
 #### Request
@@ -114,8 +114,8 @@ The simplest way to authenticate users
 
 ### Verify Account
 
-```http 
-  GET /api/auth/verify-account?token=${string} 
+```http
+GET /api/auth/verify-account?token=${string} 
 ```
 
 
