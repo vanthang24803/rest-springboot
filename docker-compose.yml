@@ -1,24 +1,21 @@
 version: '3.8'
 
 services:
-    db:
-      image: postgres:alpine
-      ports:
-        - "5432:5432"
-      environment:
-        POSTGRES_USER: postgres
-        POSTGRES_PASSWORD: anhthang123
-        POSTGRES_DB: project
-
     back-end:
       build: .
-      container_name: app_container
+      container_name: api_store
       ports:
         - "8080:8080"
       environment:
-        - DB_URL=jdbc:postgresql://db:5432/project
-        - DB_USERNAME=postgres
-        - DB_PASSWORD=anhthang123
-      depends_on:
-        - db
+        - PD_DB_URL=jdbc:postgresql://dpg-cna5gb8l6cac739o3ov0-a.singapore-postgres.render.com/database_d1ez
+        - PD_DB_USERNAME=database_d1ez_user
+        - PD_DB_PASSWORD=Vh6GAW0XrYvypwJ4OLJodpTKZxYydr8n
+        - GG_ID=4389269942-ji451ahvltj7snhchvf6aagn7tfjo2bi.apps.googleusercontent.com
+        - GG_SECRET=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
+        - API_KEY=523438667831375
+        - API_SECRET=xFYxKxOs6M3Sz8BYYgKsFnLrnd8
+        - CLIENT_URL=http://localhost:8080
+        - CLOUD_NAME=djla9thdo
+        - MAIL_USERNAME=nguyenthang240803@gmail.com
+        - MAIL_PASSWORD=csac kgpl qdou bvja
       restart: always
