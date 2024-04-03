@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -36,4 +37,34 @@ public class VoucherController {
 
         return new ResponseEntity<>(voucher, HttpStatus.OK);
     }
+
+    @GetMapping(path = "vouchers")
+    public ResponseEntity<?> findAll() {
+        List<Voucher> vouchers = voucherService.findAll();
+        return new ResponseEntity<>(vouchers, HttpStatus.OK);
+    }
+
+    @PostMapping(path = "voucher/find")
+    public ResponseEntity<?> findByCode(@RequestBody String code) {
+        Voucher voucher = voucherService.findByCode(code);
+
+        if (voucher == null) {
+            return new ResponseEntity<>("Voucher not found", HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(code, HttpStatus.OK);
+    }
+
+    @DeleteMapping(path = "voucher/{id}")
+    public ResponseEntity<?> delete(@PathVariable UUID id) {
+        if (!voucherService.isExist(id)) {
+            return new ResponseEntity<>("Voucher not found", HttpStatus.NOT_FOUND);
+        }
+
+        voucherService.remove(id);
+
+        return new ResponseEntity<>("Voucher deleted successfully", HttpStatus.OK);
+
+    }
+
 }
