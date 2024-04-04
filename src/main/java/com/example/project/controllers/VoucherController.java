@@ -1,11 +1,14 @@
 package com.example.project.controllers;
 
+import com.example.project.dtos.request.CouponDto;
 import com.example.project.dtos.request.VoucherDto;
 import com.example.project.models.Voucher;
 import com.example.project.services.VoucherService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,7 +21,12 @@ public class VoucherController {
     private final VoucherService voucherService;
 
     @PostMapping(path = "voucher")
-    public ResponseEntity<?> create(@RequestBody VoucherDto voucherDto) {
+    public ResponseEntity<?> create(@RequestBody @Valid VoucherDto voucherDto, BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            return new ResponseEntity<>("Validation data", HttpStatus.BAD_REQUEST);
+        }
+
         Voucher voucher = voucherService.save(voucherDto);
 
         return new ResponseEntity<>(voucher, HttpStatus.CREATED);
@@ -27,8 +35,12 @@ public class VoucherController {
     @PutMapping(path = "voucher/{id}")
     public ResponseEntity<?> update(
             @PathVariable UUID id,
-            @RequestBody VoucherDto voucherDto
+            @RequestBody @Valid VoucherDto voucherDto,
+            BindingResult bindingResult
     ) {
+        if (bindingResult.hasErrors()) {
+            return new ResponseEntity<>("Validation data", HttpStatus.BAD_REQUEST);
+        }
         if (!voucherService.isExist(id)) {
             return new ResponseEntity<>("Voucher not found", HttpStatus.NOT_FOUND);
         }
@@ -45,14 +57,14 @@ public class VoucherController {
     }
 
     @PostMapping(path = "voucher/find")
-    public ResponseEntity<?> findByCode(@RequestBody String code) {
-        Voucher voucher = voucherService.findByCode(code);
+    public ResponseEntity<?> findByCode(@RequestBody @Valid CouponDto coupon) {
+        Voucher voucher = voucherService.findByCode(coupon.getCode());
 
         if (voucher == null) {
             return new ResponseEntity<>("Voucher not found", HttpStatus.NOT_FOUND);
         }
 
-        return new ResponseEntity<>(code, HttpStatus.OK);
+        return new ResponseEntity<>(voucher, HttpStatus.OK);
     }
 
     @DeleteMapping(path = "voucher/{id}")

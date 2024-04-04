@@ -3,6 +3,7 @@ package com.example.project.controllers;
 import com.example.project.dtos.request.AddressDto;
 import com.example.project.models.Address;
 import com.example.project.services.AddressService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ public class AddressController {
 
     @PostMapping(path = "address")
     public ResponseEntity<?> create(
-            Principal principal, @RequestBody AddressDto addressDto) {
+            Principal principal, @RequestBody @Valid AddressDto addressDto) {
         if (principal == null) {
             return new ResponseEntity<>("Token not found", HttpStatus.NOT_FOUND);
         }
@@ -45,7 +46,7 @@ public class AddressController {
 
     @PutMapping(path = "address/{id}")
     public ResponseEntity<?> updateAddress(
-            Principal principal, @PathVariable UUID id, @RequestBody AddressDto addressDto
+            Principal principal, @PathVariable UUID id, @RequestBody @Valid AddressDto addressDto
     ) {
         if (principal == null) {
             return new ResponseEntity<>("Token not found", HttpStatus.NOT_FOUND);

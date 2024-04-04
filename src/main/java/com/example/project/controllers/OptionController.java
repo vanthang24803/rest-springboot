@@ -3,6 +3,7 @@ package com.example.project.controllers;
 import com.example.project.dtos.request.OptionDto;
 import com.example.project.models.Option;
 import com.example.project.services.OptionService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ public class OptionController {
 
     @PostMapping(path = "{productId}/option")
     public ResponseEntity<?> createOption(
-            @PathVariable UUID productId, @RequestBody OptionDto optionDto
+            @PathVariable UUID productId, @RequestBody @Valid OptionDto optionDto
     ) {
         if (!optionService.isProductExits(productId)) {
             return new ResponseEntity<>("Product not found", HttpStatus.NOT_FOUND);
@@ -62,7 +63,7 @@ public class OptionController {
     @PutMapping(path = "{productId}/option/{optionId}")
     public ResponseEntity<?> updateOption(
             @PathVariable UUID productId, @PathVariable UUID optionId,
-            @RequestBody OptionDto optionDto
+            @RequestBody @Valid OptionDto optionDto
     ) {
         if (!optionService.isProductExits(productId)) {
             return new ResponseEntity<>("Product not found", HttpStatus.NOT_FOUND);

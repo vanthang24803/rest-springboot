@@ -14,6 +14,7 @@ import com.example.project.repositories.UserRepository;
 import com.example.project.security.JWTGenerator;
 import com.example.project.services.SendMailService;
 import com.example.project.untils.TokenUntils;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.expression.ExpressionException;
 import org.springframework.http.HttpStatus;
@@ -43,7 +44,7 @@ public class AuthController {
     private final String clientUrl = System.getenv("CLIENT_URL");
 
     @PostMapping(path = "register")
-    public ResponseEntity<?> register(@RequestBody RegisterDto registerDto) {
+    public ResponseEntity<?> register(@RequestBody @Valid RegisterDto registerDto) {
         if (userRepository.existsUserByEmail(registerDto.getEmail())) {
             return new ResponseEntity<>("Email is taken!", HttpStatus.BAD_REQUEST);
         }
@@ -84,7 +85,7 @@ public class AuthController {
 
     @PostMapping(path = "login")
     public ResponseEntity<?> login(
-            @RequestBody LoginDto loginDto
+            @RequestBody @Valid LoginDto loginDto
     ) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -103,7 +104,7 @@ public class AuthController {
 
     @PostMapping(path = "forgot-password")
     public ResponseEntity<String> forgot(
-            @RequestBody ForgotPasswordDto forgotPasswordDto
+            @RequestBody @Valid ForgotPasswordDto forgotPasswordDto
     ) {
         if (!userRepository.existsUserByEmail(forgotPasswordDto.getEmail())) {
             return new ResponseEntity<>("Email not found!", HttpStatus.NOT_FOUND);
@@ -144,7 +145,7 @@ public class AuthController {
     @PutMapping(path = "reset-password")
     public ResponseEntity<String> resetPassword(
             @RequestParam("token") String token,
-            @RequestBody ResetPasswordDto resetPasswordDto
+            @RequestBody @Valid  ResetPasswordDto resetPasswordDto
     ) {
         if (!tokenRepository.existsByValue(token)) {
             return new ResponseEntity<>("Token not found", HttpStatus.NOT_FOUND);

@@ -5,6 +5,7 @@ import com.example.project.dtos.request.UpdateProfileDto;
 import com.example.project.dtos.response.MessageResponseDto;
 import com.example.project.dtos.response.ProfileDto;
 import com.example.project.services.ProfileService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +34,7 @@ public class ProfileController {
 
     @PutMapping(path = "profile")
     public ResponseEntity<?> update(
-            Principal principal, @RequestBody UpdateProfileDto updateProfileDto) {
+            Principal principal, @RequestBody @Valid UpdateProfileDto updateProfileDto) {
         if (principal == null) {
             return new ResponseEntity<>("Token not found", HttpStatus.NOT_FOUND);
         }
@@ -58,7 +59,7 @@ public class ProfileController {
 
     @PutMapping(path = "profile/password")
     public ResponseEntity<?> password(
-            Principal principal, @RequestBody PasswordDto passwordDto) {
+            Principal principal, @RequestBody @Valid PasswordDto passwordDto) {
 
         if (principal == null) {
             return new ResponseEntity<>("Token not found", HttpStatus.NOT_FOUND);
